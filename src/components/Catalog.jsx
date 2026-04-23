@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { openWhatsApp } from "../constants";
+const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa");
 
 function Catalog() {
   const categoriesData = [
@@ -108,15 +110,6 @@ function Catalog() {
         const totalGames = categoriesData[index].games.length;
         return value === totalGames - 1 ? 0 : value + 1;
       })
-    );
-  };
-
-  const handleWhatsApp = (category) => {
-    const phone = "50688993118";
-    const message = `Hola, quiero consultar por más juegos de la categoría ${category} 🎲`;
-    window.open(
-      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-      "_blank"
     );
   };
 

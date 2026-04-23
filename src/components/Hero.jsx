@@ -1,12 +1,8 @@
 import logo from "../assets/Rolo.png";
+import { openWhatsApp } from "../constants";
+const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa");
 
 function Hero() {
-  const handleWhatsApp = () => {
-    const phone = "50688993118";
-    const message = "Hola, quiero alquilar un juego de mesa 🎲";
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
   return (
     <section className="hero">
       <div className="container hero-content">
@@ -19,7 +15,7 @@ function Hero() {
 
           <p className="hero-description">
             Explorá juegos de estrategia, risas o para una cita
-            Reservá fácil por WhatsApp y encontrá el plan perfecto para tu próxima plan.
+            Reservá fácil por WhatsApp y encontrá el plan perfecto para tu próximo plan.
           </p>
 
           <div className="hero-actions">

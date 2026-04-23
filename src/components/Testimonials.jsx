@@ -10,7 +10,7 @@ function Testimonials() {
     },
     {
       name: "Mauricio",
-      text: "Como amantes del café, Coffee Rush fue un invreible juego para un date night increible",
+      text: "Como amantes del café, Coffee Rush fue un increible juego para un date night distinto",
     },
   ];
 

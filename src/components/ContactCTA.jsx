@@ -1,10 +1,6 @@
+import { openWhatsApp } from "../constants";
+const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa");
 function ContactCTA() {
-  const handleWhatsApp = () => {
-    const phone = "50688993118";
-    const message = "Hola, quiero reservar un juego de mesa";
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
   return (
     <section className="contact-cta-section">
       <div className="container">

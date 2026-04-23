@@ -1,12 +1,8 @@
 import logo from "../assets/rolosimplificado.png";
+import { openWhatsApp } from "../constants";
+const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa ");
 
 function Navbar() {
-  const handleWhatsApp = () => {
-    const phone = "50688993118";
-    const message = "Hola, quiero alquilar un juego de mesa";
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
   return (
     <header className="navbar">
       <div className="container navbar-content">
