@@ -10,21 +10,21 @@ function Catalog() {
       games: [
         {
           name: "Codenames",
-          image: "/images/codenames.jpg",
+          image: "/images/codenames.webp",
           players: "4-8 jugadores",
           time: "15 min",
           type: "Party",
         },
         {
           name: "Chao Pescao",
-          image: "/images/chaopescao.jpg",
+          image: "/images/chaopescao.webp",
           players: "4-8 jugadores",
           time: "15 min",
           type: "Party",
         },
         {
           name: "Taco Cat Goat Cheese Pizza",
-          image: "/images/tacocat.jpg",
+          image: "/images/tacocat.webp",
           players: "4-8 jugadores",
           time: "15 min",
           type: "Party",
@@ -37,21 +37,21 @@ function Catalog() {
       games: [
         {
           name: "Floristry",
-          image: "/images/floristry.jpg",
+          image: "/images/floristry.webp",
           players: "2 jugadores",
           time: "20 min",
           type: "Parejas",
         },
         {
           name: "Coffee Rush",
-          image: "/images/coffeerush.jpg",
+          image: "/images/coffeerush.webp",
           players: "2-4 jugadores",
           time: "30 min",
           type: "Casual",
         },
         {
           name: "Villainous",
-          image: "/images/villainous.jpg",
+          image: "/images/villainous.webp",
           players: "2-6 jugadores",
           time: "50 min",
           type: "Competitivo",
@@ -64,21 +64,21 @@ function Catalog() {
       games: [
         {
           name: "Catan",
-          image: "/images/catan.jpg",
+          image: "/images/catan.webp",
           players: "3-4 jugadores",
           time: "60 min",
           type: "Estrategia",
         },
         {
           name: "Azul",
-          image: "/images/azul.jpg",
+          image: "/images/azul.webp",
           players: "2-4 jugadores",
           time: "30-45 min",
           type: "Abstracto",
         },
         {
           name: "Ticket to Ride",
-          image: "/images/tickettoride.jpg",
+          image: "/images/tickettoride.webp",
           players: "2-5 jugadores",
           time: "45 min",
           type: "Estrategia",
@@ -140,12 +140,8 @@ function Catalog() {
                   />
 
                   <div className="catalog-carousel-controls">
-                    <button
-                      className="arrow-btn"
-                      onClick={() => handlePrev(categoryIndex)}
-                    >
-                      ❮
-                    </button>
+                    <button className="arrow-btn" aria-label="Juego anterior" onClick={() => handlePrev(categoryIndex)}> ❮ </button>
+
 
                     <div className="catalog-game-info">
                       <span className="catalog-game-name">
@@ -161,12 +157,19 @@ function Catalog() {
                       </div>
                     </div>
 
-                    <button
-                      className="arrow-btn"
-                      onClick={() => handleNext(categoryIndex)}
-                    >
-                      ❯
-                    </button>
+                  <button className="arrow-btn" aria-label="Siguiente juego" onClick={() => handleNext(categoryIndex)}> ❯ </button>
+                  </div>
+                  <div className="carousel-dots">
+                    {category.games.map((_, i) => (
+                      <span
+                        key={i}
+                        className={
+                          i === currentIndexes[categoryIndex]
+                            ? "dot active"
+                            : "dot"
+                        }
+                      />
+                    ))}
                   </div>
                 </div>
 

@@ -1,4 +1,4 @@
-import logo from "../assets/rolosimplificado.png";
+import logo from "../assets/rolosimplificado.webp";
 import { openWhatsApp } from "../constants";
 const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa ");
 
@@ -13,7 +13,7 @@ function Navbar() {
         </div>
 
         {/* Links */}
-        <nav className="navbar-links">
+        <nav className="navbar-links" aria-label="Navegación principal">
           <a href="#how-it-works">Cómo funciona</a>
           <a href="#catalog">Catálogo</a>
           <a href="#pricing">Precios</a>

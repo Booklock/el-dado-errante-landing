@@ -590,3 +590,23 @@ section {
   font-size: 0.82rem;
   font-weight: 500;
 }
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #d9cdb7;
+  transition: all 0.2s ease;
+}
+
+.dot.active {
+  width: 24px;
+  background: var(--color-primary);
+}

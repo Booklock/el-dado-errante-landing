@@ -1,4 +1,4 @@
-import logo from "../assets/Rolo.png";
+import logo from "../assets/Rolo.webp";
 import { openWhatsApp } from "../constants";
 const handleWhatsApp = () => openWhatsApp("Hola, quiero alquilar un juego de mesa");
 
