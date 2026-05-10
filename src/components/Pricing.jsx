@@ -1,9 +1,7 @@
+import { openWhatsApp } from "../constants";
+
 function Pricing() {
-  const handleWhatsApp = () => {
-    const phone = "50688993118";
-    const message = "Hola, quiero conocer los precios, promos y servicios 🎲";
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-  };
+  const handleWhatsApp = () => openWhatsApp("Hola, quiero conocer los precios, promos y servicios 🎲");
 
   return (
     <section id="pricing" className="pricing-section">
@@ -37,12 +35,16 @@ function Pricing() {
           </article>
 
           <article className="pricing-card card">
-            <h3>Suscripciones</h3>
-            <p className="price-highlight">Consultá disponibilidad</p>
+            <h3>Membresías</h3>
+            <p className="price-highlight">Desde ₡8.000/mes</p>
             <ul>
-              <li>Rotación de juegos en el periodo de suscripción</li>
-              <li>Perfecto para verdaderos amantes del tablero</li>
+              <li>Rotación mensual de juegos</li>
+              <li>Planes Casual, Jugón y Party</li>
+              <li>Para los que siempre quieren algo nuevo</li>
             </ul>
+            <a href="#memberships" className="btn btn-secondary pricing-membership-link">
+              Ver planes
+            </a>
           </article>
         </div>
 
