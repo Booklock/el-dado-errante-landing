@@ -630,6 +630,42 @@ section {
   margin: 1.5rem 0;
 }
 
+.catalog-image-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.availability-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.availability-badge.available {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.availability-badge.unavailable {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.catalog-loading,
+.catalog-error {
+  text-align: center;
+  color: var(--color-text-soft);
+  padding: 3rem 0;
+  font-size: 1.1rem;
+}
+
 .catalog-game-image {
   transform: scale(1.03);
   width: 100%;
