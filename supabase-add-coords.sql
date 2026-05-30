@@ -7,8 +7,13 @@ alter table clients
   add column if not exists lat  double precision,
   add column if not exists lng  double precision;
 
--- Recrear vista con link de Waze incluido
-create or replace view client_overview as
+-- Drop en cascada para poder recrear con columnas nuevas
+drop view if exists business_stats cascade;
+drop view if exists clients_by_province cascade;
+drop view if exists game_rankings cascade;
+drop view if exists client_overview cascade;
+
+create view client_overview as
 select
   c.id,
   c.name,
