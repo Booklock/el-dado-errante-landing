@@ -15,17 +15,17 @@ function Hero() {
 
           <p className="hero-description">
             Explorá juegos de estrategia, risas o para una cita
-            Reservá fácil por WhatsApp y encontrá el plan perfecto para tu próximo plan.
+            Reservá fácil y encontrá el plan perfecto para tu próximo plan.
           </p>
 
           <div className="hero-actions">
-            <button className="btn btn-primary" onClick={handleWhatsApp}>
-              Reservar por WhatsApp
-            </button>
-
-            <a href="#how-it-works" className="btn btn-secondary">
-              Cómo funciona
+            <a href="#reservar" className="btn btn-primary">
+              Reservar ahora
             </a>
+
+            <button className="btn btn-secondary" onClick={handleWhatsApp}>
+              WhatsApp
+            </button>
           </div>
 
           <div className="hero-trust">
@@ -41,7 +41,7 @@ function Hero() {
 
             <div className="trust-item">
               <strong>Reserva fácil</strong>
-              <span>por WhatsApp</span>
+              <span>en minutos</span>
             </div>
           </div>
         </div>
