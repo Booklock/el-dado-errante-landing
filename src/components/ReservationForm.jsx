@@ -48,7 +48,14 @@ function ReservationForm() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    if (name === "start_date" && value) {
+      const end = new Date(value);
+      end.setDate(end.getDate() + 4);
+      const endStr = end.toISOString().split("T")[0];
+      setForm(prev => ({ ...prev, start_date: value, end_date: endStr }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleLocation() {
@@ -245,10 +252,10 @@ function ReservationForm() {
                     min={new Date().toISOString().split("T")[0]} />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="end_date">Fecha de devolución *</label>
-                  <input id="end_date" name="end_date" type="date" required
-                    value={form.end_date} onChange={handleChange}
-                    min={form.start_date || new Date().toISOString().split("T")[0]} />
+                  <label htmlFor="end_date">Devolución (4 días después)</label>
+                  <input id="end_date" name="end_date" type="date" readOnly
+                    value={form.end_date}
+                    style={{ background: "#f9f6f1", color: "var(--color-text-soft)", cursor: "default" }} />
                 </div>
               </div>
               <div className="form-group">
