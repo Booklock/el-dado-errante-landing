@@ -356,6 +356,48 @@ section {
   opacity: 1;
 }
 
+.footer-instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #e7dcc7;
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.footer-instagram:hover {
+  opacity: 1;
+}
+
+.footer-bottom {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-bottom p {
+  font-size: 0.8rem;
+  color: #e7dcc7;
+  opacity: 0.6;
+  margin: 0;
+}
+
+.navbar-instagram {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text);
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  padding: 0.25rem;
+}
+
+.navbar-instagram:hover {
+  opacity: 1;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .steps-grid {

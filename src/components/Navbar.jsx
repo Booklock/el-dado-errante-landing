@@ -2,11 +2,13 @@ import { useState } from "react";
 import logo from "../assets/rolosimplificado.webp";
 import { openWhatsApp } from "../constants";
 
+const INSTAGRAM_URL = "https://www.instagram.com/eldadoerrantecr?igsh=c3QxM2JkYmp5dTJh";
+
 const NAV_LINKS = [
   { href: "#how-it-works", label: "Cómo funciona" },
   { href: "#catalog", label: "Catálogo" },
   { href: "#pricing", label: "Precios" },
-  { href: "#testimonials", label: "Testimonios" },
+  { href: "#reservar", label: "Reservar" },
 ];
 
 function Navbar() {
@@ -33,6 +35,19 @@ function Navbar() {
 
         {/* CTA escritorio + botón hamburguesa */}
         <div className="navbar-right">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="navbar-instagram"
+            aria-label="Instagram"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
           <button className="btn btn-primary navbar-cta-desktop" onClick={handleWhatsApp}>
             WhatsApp
           </button>
