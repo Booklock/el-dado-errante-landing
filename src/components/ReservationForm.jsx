@@ -1,118 +1,102 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { openWhatsApp } from "../constants";
+import { useCurrentClient } from "../hooks/useCurrentClient";
+import AuthModal from "./AuthModal";
 
-const CR_PROVINCES = [
-  "San José", "Alajuela", "Cartago", "Heredia",
-  "Guanacaste", "Puntarenas", "Limón",
-];
+function ReservationGate({ onOpenAuth }) {
+  return (
+    <section id="reservar" className="reservation-section">
+      <div className="container">
+        <span className="section-label">Reservas</span>
+        <h2 className="section-title">Reservá tu juego</h2>
+        <div className="reservation-gate card">
+          <span style={{ fontSize: "2.5rem" }}>🎲</span>
+          <h3>Necesitás una cuenta para reservar</h3>
+          <p>Creá tu cuenta gratis y tus datos quedan guardados para reservar más rápido siempre.</p>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="btn btn-primary" onClick={onOpenAuth}>Crear cuenta / Iniciar sesión</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-const EMPTY_FORM = {
-  name: "", phone: "", email: "",
-  province: "", district: "", address: "",
-  game_id: "", start_date: "", end_date: "",
-  notes: "",
-};
-
-function ReservationForm() {
-  const [form, setForm]       = useState(EMPTY_FORM);
-  const [games, setGames]     = useState([]);
-  const [coords, setCoords]   = useState(null);
-  const [locStatus, setLocStatus] = useState("idle"); // idle | loading | ok | error
-  const [submitStatus, setSubmitStatus] = useState("idle"); // idle | loading | success | error
+export default function ReservationForm() {
+  const { session, client, refetch } = useCurrentClient();
+  const [games,        setGames]        = useState([]);
+  const [form,         setForm]         = useState({ game_id: "", start_date: "", end_date: "", notes: "" });
+  const [coords,       setCoords]       = useState(null);
+  const [locStatus,    setLocStatus]    = useState("idle");
+  const [submitStatus, setSubmitStatus] = useState("idle");
+  const [showAuth,     setShowAuth]     = useState(false);
 
   useEffect(() => {
-    supabase.from("games").select("id, name, category, price, available")
-      .eq("available", true)
-      .order("name")
+    supabase.from("games").select("id, name, price, available")
+      .eq("available", true).order("name")
       .then(({ data }) => setGames(data ?? []));
   }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "start_date" && value) {
+      const end = new Date(value);
+      end.setDate(end.getDate() + 4);
+      setForm(prev => ({ ...prev, start_date: value, end_date: end.toISOString().split("T")[0] }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleLocation() {
-    if (!navigator.geolocation) {
-      setLocStatus("error");
-      return;
-    }
+    if (!navigator.geolocation) { setLocStatus("error"); return; }
     setLocStatus("loading");
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setLocStatus("ok");
-      },
-      () => setLocStatus("error"),
+      pos => { setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setLocStatus("ok"); },
+      ()  => setLocStatus("error"),
       { timeout: 10000 }
     );
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!client) return;
     setSubmitStatus("loading");
 
-    // 1. Crear o buscar cliente por teléfono
-    let clientId;
-    const { data: existing } = await supabase
-      .from("clients")
-      .select("id")
-      .eq("phone", form.phone)
-      .maybeSingle();
-
-    if (existing) {
-      clientId = existing.id;
-      // Actualizar datos si ya existe
-      await supabase.from("clients").update({
-        name: form.name,
-        email: form.email || null,
-        province: form.province || null,
-        district: form.district || null,
-        address: form.address || null,
-        lat: coords?.lat ?? null,
-        lng: coords?.lng ?? null,
-      }).eq("id", clientId);
-    } else {
-      const { data: newClient, error: clientError } = await supabase
-        .from("clients")
-        .insert({
-          name: form.name,
-          phone: form.phone,
-          email: form.email || null,
-          province: form.province || null,
-          district: form.district || null,
-          address: form.address || null,
-          lat: coords?.lat ?? null,
-          lng: coords?.lng ?? null,
-        })
-        .select("id")
-        .single();
-
-      if (clientError) { setSubmitStatus("error"); return; }
-      clientId = newClient.id;
+    // Actualizar ubicación si la compartió
+    if (coords) {
+      await supabase.from("clients").update({ lat: coords.lat, lng: coords.lng }).eq("id", client.id);
+      refetch();
     }
 
-    // 2. Crear reserva
-    const { error: resError } = await supabase.from("reservations").insert({
-      client_id: clientId,
-      game_id: form.game_id || null,
+    const { error } = await supabase.from("reservations").insert({
+      client_id:  client.id,
+      game_id:    form.game_id   || null,
       start_date: form.start_date,
-      end_date: form.end_date,
-      notes: form.notes || null,
-      status: "pending",
+      end_date:   form.end_date,
+      notes:      form.notes     || null,
+      status:     "pending",
     });
 
-    if (resError) { setSubmitStatus("error"); return; }
-
+    if (error) { setSubmitStatus("error"); return; }
     setSubmitStatus("success");
 
-    // 3. También notificar por WhatsApp (flujo actual)
-    const selectedGame = games.find((g) => g.id === form.game_id);
-    const msg = `Hola! Acabo de hacer una reserva 🎲\n\n*Nombre:* ${form.name}\n*Teléfono:* ${form.phone}\n*Juego:* ${selectedGame?.name ?? "Por confirmar"}\n*Desde:* ${form.start_date}\n*Hasta:* ${form.end_date}${form.address ? `\n*Dirección:* ${form.address}` : ""}`;
-    openWhatsApp(msg);
+    const selectedGame = games.find(g => g.id === form.game_id);
+    openWhatsApp(`Hola! Acabo de hacer una reserva 🎲\n\n*Nombre:* ${client.name}\n*Teléfono:* ${client.phone ?? "—"}\n*Juego:* ${selectedGame?.name ?? "Por confirmar"}\n*Desde:* ${form.start_date}\n*Hasta:* ${form.end_date}${client.address ? `\n*Dirección:* ${client.address}` : ""}`);
   }
 
+  // No logueado
+  if (!session) {
+    return (
+      <>
+        <ReservationGate onOpenAuth={() => setShowAuth(true)} />
+        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+      </>
+    );
+  }
+
+  // Éxito
   if (submitStatus === "success") {
     return (
       <section id="reservar" className="reservation-section">
@@ -121,7 +105,7 @@ function ReservationForm() {
             <span className="reservation-success-icon">🎲</span>
             <h3>¡Reserva enviada!</h3>
             <p>Te vamos a confirmar por WhatsApp en unos minutos.</p>
-            <button className="btn btn-secondary" onClick={() => { setForm(EMPTY_FORM); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
+            <button className="btn btn-secondary" onClick={() => { setForm({ game_id: "", start_date: "", end_date: "", notes: "" }); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
               Hacer otra reserva
             </button>
           </div>
@@ -135,101 +119,33 @@ function ReservationForm() {
       <div className="container">
         <span className="section-label">Reservas</span>
         <h2 className="section-title">Reservá tu juego</h2>
-        <p className="section-description">
-          Completá el formulario y te confirmamos por WhatsApp.
-        </p>
+        <p className="section-description">Completá el formulario y te confirmamos por WhatsApp.</p>
+
+        {/* Resumen de datos del cliente */}
+        <div className="reservation-client-summary">
+          <div className="reservation-client-info">
+            <span className="reservation-client-avatar">{client?.name?.[0]?.toUpperCase()}</span>
+            <div>
+              <p style={{ fontWeight: 700, margin: 0 }}>{client?.name ?? "—"}</p>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--color-text-soft)" }}>
+                {client?.phone ?? "Sin teléfono"} · {client?.province ?? "Sin provincia"}
+              </p>
+            </div>
+          </div>
+        </div>
 
         <form className="reservation-form card" onSubmit={handleSubmit}>
-
-          {/* Datos personales */}
-          <fieldset className="form-fieldset">
-            <legend className="form-legend">Tus datos</legend>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Nombre completo *</label>
-                <input id="name" name="name" type="text" required
-                  value={form.name} onChange={handleChange}
-                  placeholder="Ej: María González" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="phone">Teléfono *</label>
-                <input id="phone" name="phone" type="tel" required
-                  value={form.phone} onChange={handleChange}
-                  placeholder="Ej: 8888-8888" />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Correo electrónico</label>
-              <input id="email" name="email" type="email"
-                value={form.email} onChange={handleChange}
-                placeholder="Opcional" />
-            </div>
-          </fieldset>
-
-          {/* Ubicación */}
-          <fieldset className="form-fieldset">
-            <legend className="form-legend">¿Dónde estás?</legend>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="province">Provincia</label>
-                <select id="province" name="province" value={form.province} onChange={handleChange}>
-                  <option value="">Seleccioná...</option>
-                  {CR_PROVINCES.map((p) => (
-                    <option key={p} value={p}>{p}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="district">Cantón / Distrito</label>
-                <input id="district" name="district" type="text"
-                  value={form.district} onChange={handleChange}
-                  placeholder="Ej: Escazú" />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="address">Dirección de entrega</label>
-              <input id="address" name="address" type="text"
-                value={form.address} onChange={handleChange}
-                placeholder="Ej: 200m norte del parque central" />
-            </div>
-
-            {/* Botón de ubicación GPS */}
-            <div className="location-btn-wrapper">
-              <button type="button" className="btn-location" onClick={handleLocation} disabled={locStatus === "loading"}>
-                {locStatus === "loading" && "Obteniendo ubicación..."}
-                {locStatus === "idle"    && "📍 Compartir mi ubicación exacta (opcional)"}
-                {locStatus === "ok"      && "✅ Ubicación guardada"}
-                {locStatus === "error"   && "❌ No se pudo obtener la ubicación"}
-              </button>
-              {locStatus === "ok" && (
-                <p className="location-hint">Vamos a poder abrirla en Waze directamente.</p>
-              )}
-            </div>
-          </fieldset>
-
-          {/* Juego y fechas */}
           <fieldset className="form-fieldset">
             <legend className="form-legend">Tu reserva</legend>
-
             <div className="form-group">
-              <label htmlFor="game_id">Juego que querés alquilar</label>
+              <label htmlFor="game_id">Juego</label>
               <select id="game_id" name="game_id" value={form.game_id} onChange={handleChange}>
                 <option value="">No estoy seguro todavía</option>
-                {games.map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.name} — ₡{g.price.toLocaleString("es-CR")}
-                  </option>
+                {games.map(g => (
+                  <option key={g.id} value={g.id}>{g.name} — ₡{g.price.toLocaleString("es-CR")}</option>
                 ))}
               </select>
-              {games.length === 0 && (
-                <p className="form-hint">Cargando juegos disponibles...</p>
-              )}
             </div>
-
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="start_date">Fecha de inicio *</label>
@@ -238,23 +154,39 @@ function ReservationForm() {
                   min={new Date().toISOString().split("T")[0]} />
               </div>
               <div className="form-group">
-                <label htmlFor="end_date">Fecha de devolución *</label>
-                <input id="end_date" name="end_date" type="date" required
-                  value={form.end_date} onChange={handleChange}
-                  min={form.start_date || new Date().toISOString().split("T")[0]} />
+                <label htmlFor="end_date">Devolución (4 días después)</label>
+                <input id="end_date" type="date" readOnly value={form.end_date}
+                  style={{ background: "#f9f6f1", color: "var(--color-text-soft)", cursor: "default" }} />
               </div>
             </div>
-
             <div className="form-group">
-              <label htmlFor="notes">Notas adicionales</label>
-              <textarea id="notes" name="notes" rows={3}
+              <label htmlFor="notes">Notas</label>
+              <textarea id="notes" name="notes" rows={2}
                 value={form.notes} onChange={handleChange}
-                placeholder="Ej: Tengo un evento el sábado, necesito el juego el viernes." />
+                placeholder="Ej: Tengo evento el sábado, necesito el juego el viernes." />
+            </div>
+          </fieldset>
+
+          <fieldset className="form-fieldset">
+            <legend className="form-legend">Ubicación de entrega</legend>
+            {client?.address && (
+              <p style={{ margin: "0 0 0.75rem", fontSize: "0.875rem", color: "var(--color-text-soft)" }}>
+                📍 {client.address}{client.district ? `, ${client.district}` : ""}
+              </p>
+            )}
+            <div className="location-btn-wrapper">
+              <button type="button" className="btn-location" onClick={handleLocation} disabled={locStatus === "loading"}>
+                {locStatus === "loading" && "Obteniendo ubicación..."}
+                {locStatus === "idle"    && (client?.lat ? "📍 Actualizar mi ubicación GPS" : "📍 Compartir mi ubicación exacta (opcional)")}
+                {locStatus === "ok"      && "✅ Ubicación actualizada"}
+                {locStatus === "error"   && "❌ No se pudo obtener la ubicación"}
+              </button>
+              {locStatus === "ok" && <p className="location-hint">Vamos a poder abrirla en Waze directamente.</p>}
             </div>
           </fieldset>
 
           {submitStatus === "error" && (
-            <p className="form-error">Hubo un error al enviar. Intentá de nuevo o escribinos por WhatsApp.</p>
+            <p className="form-error">Hubo un error. Intentá de nuevo o escribinos por WhatsApp.</p>
           )}
 
           <button type="submit" className="btn btn-primary reservation-submit" disabled={submitStatus === "loading"}>
@@ -265,5 +197,3 @@ function ReservationForm() {
     </section>
   );
 }
-
-export default ReservationForm;
