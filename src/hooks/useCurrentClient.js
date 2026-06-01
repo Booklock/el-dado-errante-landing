@@ -7,6 +7,7 @@ export function useCurrentClient() {
   const [loading, setLoading] = useState(true);
 
   const fetchClient = useCallback(async (userId) => {
+    if (!userId) { setClient(null); setLoading(false); return; }
     const { data } = await supabase
       .from("clients")
       .select("*")
@@ -17,23 +18,21 @@ export function useCurrentClient() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) fetchClient(session.user.id);
-      else setLoading(false);
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      fetchClient(s?.user?.id);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setSession(session);
-      if (session) fetchClient(session.user.id);
-      else { setClient(null); setLoading(false); }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      fetchClient(s?.user?.id);
     });
 
     return () => subscription.unsubscribe();
   }, [fetchClient]);
 
   const refetch = useCallback(() => {
-    if (session) fetchClient(session.user.id);
+    if (session?.user?.id) fetchClient(session.user.id);
   }, [session, fetchClient]);
 
   return { session, client, loading, refetch };

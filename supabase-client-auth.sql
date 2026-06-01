@@ -1,21 +1,37 @@
--- =============================================
--- Vincular clientes con Supabase Auth
--- Correr en Supabase > SQL Editor > New query
--- =============================================
+-- =====================================================
+-- PASO 1: Agregar columna auth_user_id a clients
+-- =====================================================
+alter table clients
+  add column if not exists auth_user_id uuid unique references auth.users(id) on delete set null;
 
 alter table clients
-  add column if not exists auth_user_id uuid unique references auth.users(id);
+  add column if not exists lat  double precision,
+  add column if not exists lng  double precision;
 
-create index if not exists clients_auth_user_idx on clients(auth_user_id);
+-- =====================================================
+-- PASO 2: Políticas RLS para que cada cliente
+--         pueda leer y actualizar su propio registro
+-- =====================================================
 
--- El cliente autenticado puede ver y editar solo su propio perfil
-create policy "Cliente lee su propio perfil"
+-- Habilitar RLS si no está activado
+alter table clients enable row level security;
+
+-- Eliminar políticas anteriores si existen
+drop policy if exists "Clients can read own record"   on clients;
+drop policy if exists "Clients can update own record" on clients;
+drop policy if exists "Admin full access to clients"  on clients;
+
+-- El cliente puede leer su propio registro
+create policy "Clients can read own record"
   on clients for select
-  to authenticated
   using (auth_user_id = auth.uid());
 
-create policy "Cliente actualiza su propio perfil"
+-- El cliente puede actualizar su propio registro
+create policy "Clients can update own record"
   on clients for update
-  to authenticated
-  using (auth_user_id = auth.uid())
-  with check (auth_user_id = auth.uid());
+  using (auth_user_id = auth.uid());
+
+-- El service role (admin) tiene acceso completo
+create policy "Admin full access to clients"
+  on clients for all
+  using (auth.role() = 'service_role');

@@ -37,6 +37,7 @@ export default function AuthModal({ onClose }) {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
+      options: { data: { name: form.name, phone: form.phone } },
     });
 
     if (signUpError) {

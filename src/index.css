@@ -1232,3 +1232,246 @@ section {
   font-weight: 600;
   color: #065f46;
 }
+
+/* =============================================
+   Customer Dashboard
+   ============================================= */
+.cd-page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 2rem 0 5rem;
+}
+
+.cd-back-btn {
+  background: none;
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.cd-back-btn:hover { color: var(--color-primary); }
+
+.cd-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cd-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cd-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.cd-subtitle {
+  margin: 0.1rem 0 0;
+  color: var(--color-text-soft);
+  font-size: 0.875rem;
+}
+
+.cd-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cd-stat-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.cd-stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1;
+  word-break: break-word;
+}
+
+.cd-stat-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-soft);
+  font-weight: 600;
+  margin: 0.3rem 0 0;
+}
+
+/* Loyalty */
+.cd-loyalty-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.cd-loyalty-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.cd-loyalty-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cd-loyalty-count {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.cd-loyalty-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+}
+
+.cd-loyalty-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #e8833a);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.cd-loyalty-msg {
+  font-size: 0.85rem;
+  color: var(--color-text-soft);
+  margin: 0;
+}
+
+.cd-loyalty-done {
+  color: #065f46;
+  font-weight: 600;
+}
+
+/* Table */
+.cd-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+}
+
+.cd-table-wrapper {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  overflow-x: auto;
+}
+
+.cd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.cd-table th {
+  background: #f9f6f1;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-soft);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cd-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f0ebe0;
+  vertical-align: middle;
+}
+
+.cd-table tr:last-child td { border-bottom: none; }
+
+.cd-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 600px) {
+  .cd-stats-grid { grid-template-columns: 1fr 1fr; }
+  .cd-stat-value { font-size: 1.25rem; }
+}
+
+/* Gate de reservas */
+.reservation-gate {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reservation-gate h3 { margin: 0; font-size: 1.25rem; }
+.reservation-gate p  { color: var(--color-text-soft); margin: 0; }
+
+/* Resumen cliente en formulario */
+.reservation-client-summary {
+  max-width: 700px;
+  margin: 0 auto 1rem;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.reservation-client-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reservation-client-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
