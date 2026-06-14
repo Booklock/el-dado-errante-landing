@@ -42,6 +42,22 @@ export default function Reservations() {
       await supabase.from("games").update({ available: newStatus !== "active" }).eq("id", r.game_id);
     }
     load();
+
+    const phone = r.clients?.phone?.replace(/\D/g, "");
+    if (!phone) return;
+
+    const game = r.games?.name ?? "el juego";
+    if (newStatus === "active") {
+      window.open(
+        `https://wa.me/506${phone}?text=${encodeURIComponent(`¡Hola ${r.clients?.name ?? ""}! 🎲 Tu reserva de *${game}* está confirmada. Te lo entregamos el *${r.start_date}*. Cualquier consulta estamos por acá.`)}`,
+        "_blank"
+      );
+    } else if (newStatus === "returned") {
+      window.open(
+        `https://wa.me/506${phone}?text=${encodeURIComponent(`¡Hola ${r.clients?.name ?? ""}! ✅ Registramos la devolución de *${game}*. ¡Gracias! Cuando quieras volver a alquilar, nos avisás 🎲`)}`,
+        "_blank"
+      );
+    }
   }
 
   async function cancel(id) {

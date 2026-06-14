@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
@@ -10,18 +10,29 @@ import Testimonials from "./components/Testimonials";
 import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
 import CustomerDashboard from "./components/CustomerDashboard";
+import ResetPasswordModal from "./components/ResetPasswordModal";
 import { useCurrentClient } from "./hooks/useCurrentClient";
+import { supabase } from "./lib/supabase";
 
 function App() {
-  const [view, setView] = useState("landing"); // 'landing' | 'dashboard'
-  const { client } = useCurrentClient();
+  const [view,          setView]          = useState("landing");
+  const [resetPassword, setResetPassword] = useState(false);
+  const { client, refetch } = useCurrentClient();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setResetPassword(true);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   if (view === "dashboard" && client) {
     return (
       <>
         <Navbar onDashboard={() => setView("dashboard")} onBack={() => setView("landing")} />
-        <CustomerDashboard client={client} onBack={() => setView("landing")} />
+        <CustomerDashboard client={client} refetch={refetch} onBack={() => setView("landing")} />
         <Footer />
+        {resetPassword && <ResetPasswordModal onClose={() => setResetPassword(false)} />}
       </>
     );
   }
@@ -38,6 +49,7 @@ function App() {
       <Testimonials />
       <ContactCTA />
       <Footer />
+      {resetPassword && <ResetPasswordModal onClose={() => setResetPassword(false)} />}
     </>
   );
 }
