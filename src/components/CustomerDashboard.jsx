@@ -169,6 +169,28 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
           />
         )}
 
+        {/* Datos del perfil */}
+        {!editing && (
+          <div className="cd-profile-card">
+            <div className="cd-profile-row">
+              <span className="cd-profile-icon">📱</span>
+              <span>{client.phone ?? <em style={{ color: "var(--color-text-soft)" }}>Sin teléfono</em>}</span>
+            </div>
+            {(client.province || client.district) && (
+              <div className="cd-profile-row">
+                <span className="cd-profile-icon">📍</span>
+                <span>{[client.province, client.district].filter(Boolean).join(", ")}</span>
+              </div>
+            )}
+            {client.address && (
+              <div className="cd-profile-row">
+                <span className="cd-profile-icon">🏠</span>
+                <span>{client.address}</span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="cd-stats-grid">
           <div className="cd-stat-card">
             <p className="cd-stat-value">{completed.length}</p>
