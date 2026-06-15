@@ -5,31 +5,21 @@ import Layout from "./Layout";
 import "./admin.css";
 import "../index.css";
 
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS ?? "")
+  .split(",")
+  .map(e => e.trim().toLowerCase())
+  .filter(Boolean);
+
 export default function AdminApp() {
   const [session, setSession] = useState(undefined);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      checkAdmin(s);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      checkAdmin(s);
-    });
+    supabase.auth.getSession().then(({ data: { session: s } }) => setSession(s));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => subscription.unsubscribe();
   }, []);
 
-  async function checkAdmin(s) {
-    if (!s?.user?.email) { setIsAdmin(false); return; }
-    const { data } = await supabase
-      .from("admins")
-      .select("email")
-      .eq("email", s.user.email)
-      .maybeSingle();
-    setIsAdmin(!!data);
-  }
+  const isAdmin = ADMIN_EMAILS.includes(session?.user?.email?.toLowerCase() ?? "");
 
   if (session === undefined) {
     return (
