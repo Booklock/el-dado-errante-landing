@@ -5,21 +5,31 @@ import Layout from "./Layout";
 import "./admin.css";
 import "../index.css";
 
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS ?? "")
-  .split(",")
-  .map(e => e.trim().toLowerCase())
-  .filter(Boolean);
-
 export default function AdminApp() {
   const [session, setSession] = useState(undefined);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => setSession(s));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      checkAdmin(s);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      checkAdmin(s);
+    });
     return () => subscription.unsubscribe();
   }, []);
 
-  const isAdmin = ADMIN_EMAILS.includes(session?.user?.email?.toLowerCase() ?? "");
+  async function checkAdmin(s) {
+    if (!s?.user?.id) { setIsAdmin(false); return; }
+    const { data } = await supabase
+      .from("clients")
+      .select("is_admin")
+      .eq("auth_user_id", s.user.id)
+      .maybeSingle();
+    setIsAdmin(data?.is_admin === true);
+  }
 
   if (session === undefined) {
     return (

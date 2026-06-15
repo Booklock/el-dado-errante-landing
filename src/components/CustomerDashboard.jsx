@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { fmtDate } from "../lib/formatDate";
 
 const LOYALTY_GOAL = 10;
 
@@ -236,8 +237,8 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
                   return (
                     <tr key={r.id}>
                       <td style={{ fontWeight: 600 }}>{r.games?.name ?? "—"}</td>
-                      <td>{r.start_date}</td>
-                      <td>{r.end_date}</td>
+                      <td>{fmtDate(r.start_date)}</td>
+                      <td>{fmtDate(r.end_date)}</td>
                       <td>
                         <span style={{ padding: "3px 10px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: 700, background: s.bg, color: s.color }}>
                           {s.label}

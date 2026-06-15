@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
+import { fmtDate } from "../../lib/formatDate";
 
 const STATUS_LABELS = {
   pending:   { label: "Pendiente",  css: "status-pending" },
@@ -118,9 +119,9 @@ export default function Reservations() {
                     )}
                   </td>
                   <td>{r.games?.name ?? "—"}</td>
-                  <td style={{ fontSize: "0.85rem" }}>{r.start_date}</td>
+                  <td style={{ fontSize: "0.85rem" }}>{fmtDate(r.start_date)}</td>
                   <td style={{ fontSize: "0.85rem", color: isOverdue ? "#dc2626" : "inherit", fontWeight: isOverdue ? 700 : 400 }}>
-                    {r.end_date} {isOverdue && "⚠️"}
+                    {fmtDate(r.end_date)} {isOverdue && "⚠️"}
                   </td>
                   <td><span className={`status-badge ${s.css}`}>{s.label}</span></td>
                   <td style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>

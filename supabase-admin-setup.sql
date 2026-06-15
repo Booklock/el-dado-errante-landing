@@ -2,17 +2,17 @@
 -- ADMIN SETUP — Correr en Supabase > SQL Editor
 -- =====================================================
 
--- 1. Unique constraint en clients.email (evita duplicados)
---    Primero limpia duplicados si los hay
-DELETE FROM clients
-WHERE id NOT IN (
-  SELECT MIN(id) FROM clients GROUP BY email
-);
+-- 1. Columna is_admin en clients (editás desde Table Editor)
+ALTER TABLE clients
+  ADD COLUMN IF NOT EXISTS is_admin boolean DEFAULT false;
 
+-- 2. Unique constraint en clients.email (evita duplicados)
+--    Si falla porque ya hay duplicados, borrá manualmente desde
+--    Table Editor el registro duplicado y volvé a correr esto.
 ALTER TABLE clients
   ADD CONSTRAINT clients_email_unique UNIQUE (email);
 
--- 2. Trigger mejorado: si el email ya existe, vincula en vez de crear duplicado
+-- 3. Trigger mejorado: si el email ya existe, vincula en vez de crear duplicado
 CREATE OR REPLACE FUNCTION public.handle_new_auth_user()
 RETURNS trigger AS $$
 BEGIN
