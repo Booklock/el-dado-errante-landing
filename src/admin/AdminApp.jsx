@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import Login from "./Login";
 import Layout from "./Layout";
 import "./admin.css";
+import "../index.css";
 
 export default function AdminApp() {
   const [session, setSession] = useState(undefined);
@@ -21,9 +22,19 @@ export default function AdminApp() {
     );
   }
 
+  const isAdmin = session?.user?.user_metadata?.role === "admin";
+
   return (
     <div className="admin-root">
-      {session ? <Layout /> : <Login />}
+      {!session   ? <Login /> :
+       !isAdmin   ? (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "1rem" }}>
+          <p style={{ fontSize: "2rem" }}>🚫</p>
+          <p style={{ fontWeight: 700 }}>Acceso no autorizado</p>
+          <p style={{ color: "var(--color-text-soft)" }}>Tu cuenta no tiene permisos de administrador.</p>
+          <button className="btn btn-secondary" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
+        </div>
+       ) : <Layout />}
     </div>
   );
 }

@@ -1486,3 +1486,49 @@ section {
   font-weight: 700;
   margin: 0 0 1.25rem;
 }
+
+/* ── Reservation gate options ── */
+.reservation-gate-options {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.reservation-gate-option {
+  flex: 1;
+  min-width: 200px;
+  max-width: 260px;
+  text-align: center;
+}
+.reservation-gate-divider {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--color-text-soft);
+  padding-top: 2.5rem;
+}
+
+/* ── Admin pending badge ── */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+}
+.admin-badge-mobile {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  font-size: 0.6rem;
+  min-width: 14px;
+  height: 14px;
+}

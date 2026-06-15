@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-import { openWhatsApp } from "../constants";
 import { useCurrentClient } from "../hooks/useCurrentClient";
 import AuthModal from "./AuthModal";
 
@@ -12,10 +11,28 @@ function ReservationGate({ onOpenAuth }) {
         <h2 className="section-title">Reservá tu juego</h2>
         <div className="reservation-gate card">
           <span style={{ fontSize: "2.5rem" }}>🎲</span>
-          <h3>Necesitás una cuenta para reservar</h3>
-          <p>Creá tu cuenta gratis y tus datos quedan guardados para reservar más rápido siempre.</p>
-          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <button className="btn btn-primary" onClick={onOpenAuth}>Crear cuenta / Iniciar sesión</button>
+          <h3>¿Cómo querés reservar?</h3>
+          <div className="reservation-gate-options">
+            <div className="reservation-gate-option">
+              <p style={{ fontWeight: 700, marginBottom: "0.25rem" }}>Con cuenta</p>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text-soft)", marginBottom: "1rem" }}>
+                Tus datos quedan guardados y el admin confirma desde el panel.
+              </p>
+              <button className="btn btn-primary" onClick={onOpenAuth}>
+                Crear cuenta / Iniciar sesión
+              </button>
+            </div>
+            <div className="reservation-gate-divider">o</div>
+            <div className="reservation-gate-option">
+              <p style={{ fontWeight: 700, marginBottom: "0.25rem" }}>Por WhatsApp</p>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text-soft)", marginBottom: "1rem" }}>
+                Escribinos directamente y coordinamos la entrega.
+              </p>
+              <button className="btn btn-secondary"
+                onClick={() => window.open("https://wa.me/50687717880?text=Hola%2C+quiero+alquilar+un+juego+de+mesa+%F0%9F%8E%B2", "_blank")}>
+                Escribir por WhatsApp
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -81,9 +98,6 @@ export default function ReservationForm() {
 
     if (error) { console.error("Reservation insert error:", error); setSubmitStatus("error"); return; }
     setSubmitStatus("success");
-
-    const selectedGame = games.find(g => g.id === form.game_id);
-    openWhatsApp(`Hola! Acabo de hacer una reserva 🎲\n\n*Nombre:* ${client.name}\n*Teléfono:* ${client.phone ?? "—"}\n*Juego:* ${selectedGame?.name ?? "Por confirmar"}\n*Desde:* ${form.start_date}\n*Hasta:* ${form.end_date}${client.address ? `\n*Dirección:* ${client.address}` : ""}`);
   }
 
   // No logueado
