@@ -65,6 +65,12 @@ export default function Navbar({ onDashboard, onBack }) {
                 </button>
                 {showMenu && (
                   <div className="navbar-user-menu">
+                    {client?.is_admin && (
+                      <a className="navbar-user-menu-item" href="/admin"
+                        style={{ color: "var(--color-primary)", fontWeight: 700 }}>
+                        ⚙️ Panel admin
+                      </a>
+                    )}
                     <button className="navbar-user-menu-item" onClick={() => { onDashboard?.(); setShowMenu(false); }}>
                       Mi historial
                     </button>
