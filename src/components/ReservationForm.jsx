@@ -24,7 +24,7 @@ function ReservationGate({ onOpenAuth }) {
 }
 
 export default function ReservationForm() {
-  const { session, client, refetch } = useCurrentClient();
+  const { session, client, loading: clientLoading, refetch } = useCurrentClient();
   const [games,        setGames]        = useState([]);
   const [form,         setForm]         = useState({ game_id: "", start_date: "", end_date: "", notes: "" });
   const [coords,       setCoords]       = useState(null);
@@ -79,7 +79,7 @@ export default function ReservationForm() {
       status:     "pending",
     });
 
-    if (error) { setSubmitStatus("error"); return; }
+    if (error) { console.error("Reservation insert error:", error); setSubmitStatus("error"); return; }
     setSubmitStatus("success");
 
     const selectedGame = games.find(g => g.id === form.game_id);
@@ -93,6 +93,28 @@ export default function ReservationForm() {
         <ReservationGate onOpenAuth={() => setShowAuth(true)} />
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
       </>
+    );
+  }
+
+  // Logueado pero sin perfil vinculado
+  if (!clientLoading && !client) {
+    return (
+      <section id="reservar" className="reservation-section">
+        <div className="container">
+          <span className="section-label">Reservas</span>
+          <h2 className="section-title">Reservá tu juego</h2>
+          <div className="reservation-gate card">
+            <span style={{ fontSize: "2.5rem" }}>⚠️</span>
+            <h3>No encontramos tu perfil</h3>
+            <p style={{ color: "var(--color-text-soft)", maxWidth: 400, margin: "0 auto 1rem" }}>
+              Tu cuenta existe pero no está vinculada a un perfil de cliente. Escribinos por WhatsApp y lo resolvemos en un momento.
+            </p>
+            <button className="btn btn-primary" onClick={() => window.open("https://wa.me/50687717880?text=Hola%2C+tengo+problema+con+mi+perfil+al+reservar", "_blank")}>
+              Contactar por WhatsApp
+            </button>
+          </div>
+        </div>
+      </section>
     );
   }
 

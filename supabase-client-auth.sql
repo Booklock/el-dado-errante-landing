@@ -35,3 +35,27 @@ create policy "Clients can update own record"
 create policy "Admin full access to clients"
   on clients for all
   using (auth.role() = 'service_role');
+
+-- =====================================================
+-- BACKFILL CORRECTO: vincula clientes existentes
+-- por email (ejecutar UNA sola vez)
+-- =====================================================
+
+-- Paso 1: vincular clientes existentes a su auth.user por email
+UPDATE clients c
+SET auth_user_id = u.id
+FROM auth.users u
+WHERE c.email = u.email
+AND c.auth_user_id IS NULL;
+
+-- Paso 2: eliminar duplicados creados por el INSERT anterior
+-- (si corriste el backfill incorrecto antes, esto limpia los duplicados)
+DELETE FROM clients
+WHERE auth_user_id IN (
+  SELECT auth_user_id
+  FROM clients
+  GROUP BY auth_user_id
+  HAVING COUNT(*) > 1
+)
+AND name = split_part(email, '@', 1)
+AND phone IS NULL;
