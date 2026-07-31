@@ -134,14 +134,27 @@ export default function ReservationForm() {
 
   // Éxito
   if (submitStatus === "success") {
+    const selectedGame = games.find(g => g.id === form.game_id);
     return (
       <section id="reservar" className="reservation-section">
         <div className="container">
           <div className="reservation-success card">
             <span className="reservation-success-icon">🎲</span>
             <h3>¡Reserva enviada!</h3>
-            <p>Te vamos a confirmar por WhatsApp en unos minutos.</p>
-            <button className="btn btn-secondary" onClick={() => { setForm({ game_id: "", start_date: "", end_date: "", notes: "" }); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
+            <p>Te confirmamos por WhatsApp en breve.</p>
+
+            <div className="sinpe-card">
+              <p className="sinpe-title">📲 Depósito por SINPE Móvil</p>
+              <p className="sinpe-number">8771-7880</p>
+              <p className="sinpe-name">El Dado Errante</p>
+              {selectedGame && (
+                <p className="sinpe-amount">Monto: <strong>₡{selectedGame.price.toLocaleString("es-CR")}</strong></p>
+              )}
+              <p className="sinpe-hint">Enviá el comprobante por WhatsApp para confirmar tu reserva.</p>
+            </div>
+
+            <button className="btn btn-secondary" style={{ marginTop: "1rem" }}
+              onClick={() => { setForm({ game_id: "", start_date: "", end_date: "", notes: "" }); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
               Hacer otra reserva
             </button>
           </div>

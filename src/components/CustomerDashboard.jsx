@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 import { fmtDate } from "../lib/formatDate";
 
@@ -48,11 +48,6 @@ function EditProfileForm({ client, onSave, onCancel }) {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState("");
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -61,11 +56,8 @@ function EditProfileForm({ client, onSave, onCancel }) {
       .from("clients")
       .update({ name: form.name, phone: form.phone, province: form.province, district: form.district, address: form.address })
       .eq("id", client.id);
-    if (error) {
-      setError("No se pudo guardar. Intentá de nuevo.");
-    } else {
-      onSave(form);
-    }
+    if (error) setError("No se pudo guardar. Intentá de nuevo.");
+    else onSave(form);
     setLoading(false);
   }
 
@@ -75,33 +67,36 @@ function EditProfileForm({ client, onSave, onCancel }) {
       <div className="form-row">
         <div className="form-group">
           <label>Nombre completo</label>
-          <input name="name" type="text" required value={form.name} onChange={handleChange} />
+          <input name="name" type="text" required value={form.name}
+            onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
         </div>
         <div className="form-group">
           <label>Teléfono</label>
-          <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="8888-8888" />
+          <input name="phone" type="tel" value={form.phone} placeholder="8888-8888"
+            onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} />
         </div>
       </div>
       <div className="form-row">
         <div className="form-group">
           <label>Provincia</label>
-          <input name="province" type="text" value={form.province} onChange={handleChange} placeholder="San José" />
+          <input name="province" type="text" value={form.province} placeholder="San José"
+            onChange={e => setForm(p => ({ ...p, province: e.target.value }))} />
         </div>
         <div className="form-group">
           <label>Cantón / Distrito</label>
-          <input name="district" type="text" value={form.district} onChange={handleChange} placeholder="Escazú" />
+          <input name="district" type="text" value={form.district} placeholder="Escazú"
+            onChange={e => setForm(p => ({ ...p, district: e.target.value }))} />
         </div>
       </div>
       <div className="form-group">
         <label>Dirección exacta</label>
-        <input name="address" type="text" value={form.address} onChange={handleChange}
-          placeholder="100m norte del parque central" />
+        <input name="address" type="text" value={form.address}
+          placeholder="100m norte del parque central"
+          onChange={e => setForm(p => ({ ...p, address: e.target.value }))} />
       </div>
       {error && <p className="form-error">{error}</p>}
       <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end", marginTop: "0.5rem" }}>
-        <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={loading}>
-          Cancelar
-        </button>
+        <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={loading}>Cancelar</button>
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "Guardando..." : "Guardar cambios"}
         </button>
@@ -116,19 +111,26 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
   const [loading,      setLoading]      = useState(true);
   const [editing,      setEditing]      = useState(false);
 
-  useEffect(() => {
-    setClient(initialClient);
-  }, [initialClient]);
+  useEffect(() => { setClient(initialClient); }, [initialClient]);
 
-  useEffect(() => {
-    if (!client) return;
-    supabase
+  const loadReservations = useCallback(async () => {
+    if (!initialClient) return;
+    const { data } = await supabase
       .from("reservations")
       .select("*, games(name, category)")
-      .eq("client_id", client.id)
-      .order("created_at", { ascending: false })
-      .then(({ data }) => { setReservations(data ?? []); setLoading(false); });
-  }, [client]);
+      .eq("client_id", initialClient.id)
+      .order("created_at", { ascending: false });
+    setReservations(data ?? []);
+    setLoading(false);
+  }, [initialClient]);
+
+  useEffect(() => { loadReservations(); }, [loadReservations]);
+
+  async function cancelReservation(id) {
+    if (!confirm("¿Cancelar esta reserva?")) return;
+    await supabase.from("reservations").update({ status: "cancelled" }).eq("id", id);
+    loadReservations();
+  }
 
   function handleSave(updated) {
     setClient(prev => ({ ...prev, ...updated }));
@@ -162,15 +164,8 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
           </button>
         </div>
 
-        {editing && (
-          <EditProfileForm
-            client={client}
-            onSave={handleSave}
-            onCancel={() => setEditing(false)}
-          />
-        )}
+        {editing && <EditProfileForm client={client} onSave={handleSave} onCancel={() => setEditing(false)} />}
 
-        {/* Datos del perfil */}
         {!editing && (
           <div className="cd-profile-card">
             <div className="cd-profile-row">
@@ -202,7 +197,9 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
             <p className="cd-stat-label">Alquileres activos</p>
           </div>
           <div className="cd-stat-card">
-            <p className="cd-stat-value">{favoriteGame ?? "—"}</p>
+            <p className="cd-stat-value" style={{ fontSize: favoriteGame && favoriteGame.length > 10 ? "0.9rem" : undefined }}>
+              {favoriteGame ?? "—"}
+            </p>
             <p className="cd-stat-label">Juego favorito</p>
           </div>
         </div>
@@ -229,11 +226,13 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
                   <th>Inicio</th>
                   <th>Devolución</th>
                   <th>Estado</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {reservations.map(r => {
                   const s = STATUS_LABEL[r.status] ?? { label: r.status, color: "#374151", bg: "#f3f4f6" };
+                  const canCancel = r.status === "pending";
                   return (
                     <tr key={r.id}>
                       <td style={{ fontWeight: 600 }}>{r.games?.name ?? "—"}</td>
@@ -243,6 +242,14 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
                         <span style={{ padding: "3px 10px", borderRadius: "999px", fontSize: "0.75rem", fontWeight: 700, background: s.bg, color: s.color }}>
                           {s.label}
                         </span>
+                      </td>
+                      <td>
+                        {canCancel && (
+                          <button className="btn-danger" style={{ fontSize: "0.75rem", padding: "4px 10px" }}
+                            onClick={() => cancelReservation(r.id)}>
+                            Cancelar
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
