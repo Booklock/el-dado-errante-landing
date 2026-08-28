@@ -20,9 +20,12 @@ BEGIN
     UPDATE clients
     SET auth_user_id = NEW.id,
         email        = COALESCE(email, NEW.email)
-    WHERE regexp_replace(COALESCE(phone, ''), '\D', '', 'g') = phone_clean
-      AND auth_user_id IS NULL
-    LIMIT 1;
+    WHERE id = (
+      SELECT id FROM clients
+      WHERE regexp_replace(COALESCE(phone, ''), '\D', '', 'g') = phone_clean
+        AND auth_user_id IS NULL
+      LIMIT 1
+    );
   END IF;
 
   -- 3. Si no encontró ningún cliente temporal, crear uno nuevo
