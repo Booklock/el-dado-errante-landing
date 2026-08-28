@@ -6,17 +6,19 @@ import Packs         from "./pages/Packs";
 import Subscriptions from "./pages/Subscriptions";
 import Reservations  from "./pages/Reservations";
 import Clients       from "./pages/Clients";
+import Finances      from "./pages/Finances";
 
 const NAV = [
-  { key: "dashboard",     label: "Inicio",   icon: "🏠" },
-  { key: "reservations",  label: "Reservas", icon: "📋" },
-  { key: "games",         label: "Juegos",   icon: "🎲" },
-  { key: "packs",         label: "Packs",    icon: "📦" },
-  { key: "subscriptions", label: "Planes",   icon: "⭐" },
-  { key: "clients",       label: "Clientes", icon: "👥" },
+  { key: "dashboard",     label: "Inicio",    icon: "🏠" },
+  { key: "reservations",  label: "Reservas",  icon: "📋" },
+  { key: "games",         label: "Juegos",    icon: "🎲" },
+  { key: "packs",         label: "Packs",     icon: "📦" },
+  { key: "subscriptions", label: "Planes",    icon: "⭐" },
+  { key: "clients",       label: "Clientes",  icon: "👥" },
+  { key: "finances",      label: "Finanzas",  icon: "💰" },
 ];
 
-const PAGES = { dashboard: Dashboard, reservations: Reservations, games: Games, packs: Packs, subscriptions: Subscriptions, clients: Clients };
+const PAGES = { dashboard: Dashboard, reservations: Reservations, games: Games, packs: Packs, subscriptions: Subscriptions, clients: Clients, finances: Finances };
 
 export default function Layout() {
   const [section, setSection] = useState("dashboard");
