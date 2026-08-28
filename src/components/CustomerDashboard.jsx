@@ -1,34 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 import { fmtDate } from "../lib/formatDate";
-
-const LOYALTY_GOAL = 10;
-
-function LoyaltyBar({ count }) {
-  const pct  = Math.min((count / LOYALTY_GOAL) * 100, 100);
-  const done = count >= LOYALTY_GOAL;
-  const left = Math.max(LOYALTY_GOAL - count, 0);
-  return (
-    <div className="cd-loyalty-card">
-      <div className="cd-loyalty-header">
-        <span className="cd-loyalty-title">🎁 Cliente frecuente</span>
-        <span className="cd-loyalty-count">{Math.min(count, LOYALTY_GOAL)}/{LOYALTY_GOAL}</span>
-      </div>
-      <div className="cd-loyalty-bar-bg">
-        <div className="cd-loyalty-bar-fill" style={{ width: `${pct}%` }} />
-      </div>
-      {done ? (
-        <p className="cd-loyalty-msg cd-loyalty-done">
-          🎉 ¡Ganaste un juego gratis! Escribinos por WhatsApp para reclamarlo.
-        </p>
-      ) : (
-        <p className="cd-loyalty-msg">
-          Te {left === 1 ? "falta 1 alquiler" : `faltan ${left} alquileres`} para ganarte un juego de mesa sorpresa.
-        </p>
-      )}
-    </div>
-  );
-}
+import StampCard from "./StampCard";
 
 const STATUS_LABEL = {
   pending:   { label: "Pendiente",  color: "#92400e", bg: "#fef3c7" },
@@ -204,7 +177,7 @@ export default function CustomerDashboard({ client: initialClient, refetch, onBa
           </div>
         </div>
 
-        <LoyaltyBar count={completed.length} />
+        <StampCard count={completed.length} />
 
         <h2 className="cd-section-title">Historial de reservas</h2>
 

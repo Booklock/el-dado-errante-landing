@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
+import StampCard from "../../components/StampCard";
 
 function LoyaltyBar({ count }) {
   const pct = Math.min((count / 10) * 100, 100);
@@ -242,6 +243,9 @@ export default function Clients() {
                           <p style={{ margin: 0, fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--color-text-soft)" }}>Cliente desde</p>
                           <p style={{ margin: 0, fontSize: "0.9rem" }}>{c.created_at?.split("T")[0] ?? "—"}</p>
                         </div>
+                      </div>
+                      <div style={{ marginTop: "1rem" }}>
+                        <StampCard count={c.total_rentals ?? 0} compact />
                       </div>
                     </td>
                   </tr>
