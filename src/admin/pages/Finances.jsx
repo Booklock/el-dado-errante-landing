@@ -112,7 +112,7 @@ export default function Finances() {
   const load = useCallback(async () => {
     const [{ data: resv }, { data: exp }] = await Promise.all([
       supabase.from("reservations")
-        .select("id, end_date, clients(name), games(name, price)")
+        .select("id, end_date, total_price, game_ids, clients(name), games(name, price)")
         .eq("status", "returned")
         .order("end_date", { ascending: false }),
       supabase.from("expenses")
@@ -135,7 +135,7 @@ export default function Finances() {
   const filteredIncomes  = incomes.filter(r => inPeriod(r.end_date, period));
   const filteredExpenses = expenses.filter(e => inPeriod(e.date, period));
 
-  const totalIncome  = filteredIncomes.reduce((s, r) => s + (r.games?.price ?? 0), 0);
+  const totalIncome  = filteredIncomes.reduce((s, r) => s + (r.total_price ?? r.games?.price ?? 0), 0);
   const totalExpense = filteredExpenses.reduce((s, e) => s + (e.amount ?? 0), 0);
   const netBalance   = totalIncome - totalExpense;
 
@@ -199,10 +199,14 @@ export default function Finances() {
                 {filteredIncomes.map(r => (
                   <tr key={r.id}>
                     <td style={{ fontWeight: 600 }}>{r.clients?.name ?? "—"}</td>
-                    <td style={{ fontSize: "0.85rem" }}>{r.games?.name ?? "—"}</td>
+                    <td style={{ fontSize: "0.85rem" }}>
+                      {r.game_ids?.length > 1
+                        ? <span>Pack ({r.game_ids.length} juegos)</span>
+                        : r.games?.name ?? "—"}
+                    </td>
                     <td style={{ fontSize: "0.85rem", color: "var(--color-text-soft)" }}>{fmtDate(r.end_date)}</td>
                     <td style={{ textAlign: "right", fontWeight: 700, color: "#065f46" }}>
-                      {r.games?.price ? fmt(r.games.price) : "—"}
+                      {fmt(r.total_price ?? r.games?.price)}
                     </td>
                   </tr>
                 ))}
