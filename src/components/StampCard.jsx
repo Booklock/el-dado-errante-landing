@@ -1,7 +1,5 @@
 const TOTAL = 10;
 
-const DICE = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
-
 export default function StampCard({ count, compact = false }) {
   const filled = Math.min(count, TOTAL);
   const done   = filled >= TOTAL;
@@ -20,7 +18,9 @@ export default function StampCard({ count, compact = false }) {
             </p>
           )}
         </div>
-        <span className="stamp-card-count">{filled}<span className="stamp-card-count-total">/{TOTAL}</span></span>
+        <span className="stamp-card-count">
+          {filled}<span className="stamp-card-count-total">/{TOTAL}</span>
+        </span>
       </div>
 
       <div className="stamp-grid">
@@ -34,9 +34,11 @@ export default function StampCard({ count, compact = false }) {
               style={isFilled ? { animationDelay: `${i * 0.07}s` } : {}}
               title={isFilled ? `Alquiler #${i + 1}` : `Alquiler #${i + 1} — pendiente`}
             >
-              {isFilled
-                ? <span className="stamp-icon">{DICE[i % DICE.length]}</span>
-                : <span className="stamp-empty-num">{i + 1}</span>}
+              {isFilled ? (
+                <img src="/logo.webp" alt="sello" className="stamp-logo" />
+              ) : (
+                <span className="stamp-empty-num">{i + 1}</span>
+              )}
             </div>
           );
         })}
