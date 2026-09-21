@@ -6,7 +6,6 @@ import Catalog from "./components/Catalog";
 import Pricing from "./components/Pricing";
 import Memberships from "./components/Memberships";
 import ReservationForm from "./components/ReservationForm";
-import Testimonials from "./components/Testimonials";
 import ContactCTA from "./components/ContactCTA";
 import Footer from "./components/Footer";
 import CustomerDashboard from "./components/CustomerDashboard";
@@ -46,7 +45,6 @@ function App() {
       <Pricing />
       <Memberships />
       <ReservationForm />
-      <Testimonials />
       <ContactCTA />
       <Footer />
       {resetPassword && <ResetPasswordModal onClose={() => setResetPassword(false)} />}
