@@ -1,25 +1,21 @@
+import { Link } from "react-router-dom";
 import { openWhatsApp } from "../constants";
-import { useInView } from "../hooks/useInView";
 
 function Pricing() {
-  const [ref, inView] = useInView();
   const handleWhatsApp = () => openWhatsApp("Hola, quiero conocer los precios, promos y servicios 🎲");
-  const rv = (extra = "") => `reveal${extra}${inView ? " in-view" : ""}`;
 
   return (
-    <section ref={ref} id="pricing" className="pricing-section">
+    <section id="pricing" className="pricing-section">
       <div className="container">
-        <span className={`section-label ${rv()}`}>Precios y servicios</span>
-        <h2 className={`section-title ${rv(" reveal-delay-1")}`}>
-          Opciones pensadas para cada tipo de noche
-        </h2>
-        <p className={`section-description ${rv(" reveal-delay-2")}`}>
+        <span className="section-label">Precios y servicios</span>
+        <h2 className="section-title">Opciones pensadas para cada tipo de noche</h2>
+        <p className="section-description">
           Desde alquiler individual hasta promos y suscripciones para quienes quieren
           tener siempre un juego nuevo en la mesa.
         </p>
 
         <div className="pricing-grid">
-          <article className={`pricing-card card ${rv(" reveal-delay-3")}`}>
+          <article className="pricing-card card">
             <h3>Alquiler individual</h3>
             <p className="price-highlight">Desde ₡3000</p>
             <ul>
@@ -29,7 +25,7 @@ function Pricing() {
             </ul>
           </article>
 
-          <article className={`pricing-card card featured-pricing ${rv(" reveal-delay-4")}`}>
+          <article className="pricing-card card featured-pricing">
             <h3>Promos</h3>
             <p className="price-highlight">Combos especiales</p>
             <ul>
@@ -37,9 +33,12 @@ function Pricing() {
               <li>Opciones para grupos y eventos</li>
               <li>Ideal para fines de semana</li>
             </ul>
+            <Link to="/precios/combos" className="btn btn-primary pricing-membership-link">
+              Ver combos
+            </Link>
           </article>
 
-          <article className={`pricing-card card ${rv(" reveal-delay-5")}`}>
+          <article className="pricing-card card">
             <h3>Membresías</h3>
             <p className="price-highlight">Desde ₡8.000/mes</p>
             <ul>
@@ -47,13 +46,13 @@ function Pricing() {
               <li>Planes Casual, Jugón y Party</li>
               <li>Para los que siempre quieren algo nuevo</li>
             </ul>
-            <a href="#memberships" className="btn btn-secondary pricing-membership-link">
+            <Link to="/precios/membresias" className="btn btn-secondary pricing-membership-link">
               Ver planes
-            </a>
+            </Link>
           </article>
         </div>
 
-        <div className={`pricing-cta ${rv(" reveal-delay-6")}`}>
+        <div className="pricing-cta">
           <button className="btn btn-primary" onClick={handleWhatsApp}>
             Quiero más información
           </button>

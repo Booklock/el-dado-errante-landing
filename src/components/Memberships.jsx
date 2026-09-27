@@ -1,5 +1,4 @@
 import { openWhatsApp } from "../constants";
-import { useInView } from "../hooks/useInView";
 
 const PLANS = [
   {
@@ -26,25 +25,20 @@ const PLANS = [
 ];
 
 function Memberships() {
-  const [ref, inView] = useInView();
-  const rv = (extra = "") => `reveal${extra}${inView ? " in-view" : ""}`;
-
   return (
-    <section ref={ref} id="memberships" className="memberships-section">
+    <section id="memberships" className="memberships-section">
       <div className="container">
-        <span className={`section-label ${rv()}`}>Membresías</span>
-        <h2 className={`section-title ${rv(" reveal-delay-1")}`}>
-          Siempre un juego nuevo en la mesa
-        </h2>
-        <p className={`section-description ${rv(" reveal-delay-2")}`}>
+        <span className="section-label">Membresías</span>
+        <h2 className="section-title">Siempre un juego nuevo en la mesa</h2>
+        <p className="section-description">
           Suscribite mensualmente y recibí juegos rotando. Sin aburrirte de jugar siempre lo mismo.
         </p>
 
         <div className="pricing-grid memberships-grid">
-          {PLANS.map((plan, i) => (
+          {PLANS.map((plan) => (
             <article
               key={plan.name}
-              className={`pricing-card card${plan.featured ? " featured-pricing" : ""} ${rv(` reveal-delay-${i + 3}`)}`}
+              className={`pricing-card card${plan.featured ? " featured-pricing" : ""}`}
             >
               {plan.featured && (
                 <span className="membership-badge">Más popular</span>
@@ -54,7 +48,7 @@ function Memberships() {
                 {plan.price} <span className="membership-period">/mes</span>
               </p>
               <ul>
-                {plan.perks.map(perk => (
+                {plan.perks.map((perk) => (
                   <li key={perk}>{perk}</li>
                 ))}
               </ul>

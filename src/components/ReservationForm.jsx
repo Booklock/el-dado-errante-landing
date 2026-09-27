@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { openWhatsApp } from "../constants";
 import { useCurrentClient } from "../hooks/useCurrentClient";
 import AuthModal from "./AuthModal";
 
@@ -9,30 +10,12 @@ function ReservationGate({ onOpenAuth }) {
       <div className="container">
         <span className="section-label">Reservas</span>
         <h2 className="section-title">Reservá tu juego</h2>
-        <div className="reservation-gate card form-appear">
+        <div className="reservation-gate card">
           <span style={{ fontSize: "2.5rem" }}>🎲</span>
-          <h3>¿Cómo querés reservar?</h3>
-          <div className="reservation-gate-options">
-            <div className="reservation-gate-option">
-              <p style={{ fontWeight: 700, marginBottom: "0.25rem" }}>Con cuenta</p>
-              <p style={{ fontSize: "0.875rem", color: "var(--color-text-soft)", marginBottom: "1rem" }}>
-                Tus datos quedan guardados y el admin confirma desde el panel.
-              </p>
-              <button className="btn btn-primary" onClick={onOpenAuth}>
-                Crear cuenta / Iniciar sesión
-              </button>
-            </div>
-            <div className="reservation-gate-divider">o</div>
-            <div className="reservation-gate-option">
-              <p style={{ fontWeight: 700, marginBottom: "0.25rem" }}>Por WhatsApp</p>
-              <p style={{ fontSize: "0.875rem", color: "var(--color-text-soft)", marginBottom: "1rem" }}>
-                Escribinos directamente y coordinamos la entrega.
-              </p>
-              <button className="btn btn-secondary"
-                onClick={() => window.open("https://wa.me/50687717880?text=Hola%2C+quiero+alquilar+un+juego+de+mesa+%F0%9F%8E%B2", "_blank")}>
-                Escribir por WhatsApp
-              </button>
-            </div>
+          <h3>Necesitás una cuenta para reservar</h3>
+          <p>Creá tu cuenta gratis y tus datos quedan guardados para reservar más rápido siempre.</p>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="btn btn-primary" onClick={onOpenAuth}>Crear cuenta / Iniciar sesión</button>
           </div>
         </div>
       </div>
@@ -41,7 +24,7 @@ function ReservationGate({ onOpenAuth }) {
 }
 
 export default function ReservationForm() {
-  const { session, client, loading: clientLoading, refetch } = useCurrentClient();
+  const { session, client, refetch } = useCurrentClient();
   const [games,        setGames]        = useState([]);
   const [form,         setForm]         = useState({ game_id: "", start_date: "", end_date: "", notes: "" });
   const [coords,       setCoords]       = useState(null);
@@ -96,8 +79,11 @@ export default function ReservationForm() {
       status:     "pending",
     });
 
-    if (error) { console.error("Reservation insert error:", error); setSubmitStatus("error"); return; }
+    if (error) { setSubmitStatus("error"); return; }
     setSubmitStatus("success");
+
+    const selectedGame = games.find(g => g.id === form.game_id);
+    openWhatsApp(`Hola! Acabo de hacer una reserva 🎲\n\n*Nombre:* ${client.name}\n*Teléfono:* ${client.phone ?? "—"}\n*Juego:* ${selectedGame?.name ?? "Por confirmar"}\n*Desde:* ${form.start_date}\n*Hasta:* ${form.end_date}${client.address ? `\n*Dirección:* ${client.address}` : ""}`);
   }
 
   // No logueado
@@ -110,51 +96,16 @@ export default function ReservationForm() {
     );
   }
 
-  // Logueado pero sin perfil vinculado
-  if (!clientLoading && !client) {
-    return (
-      <section id="reservar" className="reservation-section">
-        <div className="container">
-          <span className="section-label">Reservas</span>
-          <h2 className="section-title">Reservá tu juego</h2>
-          <div className="reservation-gate card form-appear">
-            <span style={{ fontSize: "2.5rem" }}>⚠️</span>
-            <h3>No encontramos tu perfil</h3>
-            <p style={{ color: "var(--color-text-soft)", maxWidth: 400, margin: "0 auto 1rem" }}>
-              Tu cuenta existe pero no está vinculada a un perfil de cliente. Escribinos por WhatsApp y lo resolvemos en un momento.
-            </p>
-            <button className="btn btn-primary" onClick={() => window.open("https://wa.me/50687717880?text=Hola%2C+tengo+problema+con+mi+perfil+al+reservar", "_blank")}>
-              Contactar por WhatsApp
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   // Éxito
   if (submitStatus === "success") {
-    const selectedGame = games.find(g => g.id === form.game_id);
     return (
       <section id="reservar" className="reservation-section">
         <div className="container">
-          <div className="reservation-success card form-appear">
+          <div className="reservation-success card">
             <span className="reservation-success-icon">🎲</span>
             <h3>¡Reserva enviada!</h3>
-            <p>Te confirmamos por WhatsApp en breve.</p>
-
-            <div className="sinpe-card">
-              <p className="sinpe-title">📲 Depósito por SINPE Móvil</p>
-              <p className="sinpe-number">8771-7880</p>
-              <p className="sinpe-name">El Dado Errante</p>
-              {selectedGame && (
-                <p className="sinpe-amount">Monto: <strong>₡{selectedGame.price.toLocaleString("es-CR")}</strong></p>
-              )}
-              <p className="sinpe-hint">Enviá el comprobante por WhatsApp para confirmar tu reserva.</p>
-            </div>
-
-            <button className="btn btn-secondary" style={{ marginTop: "1rem" }}
-              onClick={() => { setForm({ game_id: "", start_date: "", end_date: "", notes: "" }); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
+            <p>Te vamos a confirmar por WhatsApp en unos minutos.</p>
+            <button className="btn btn-secondary" onClick={() => { setForm({ game_id: "", start_date: "", end_date: "", notes: "" }); setCoords(null); setLocStatus("idle"); setSubmitStatus("idle"); }}>
               Hacer otra reserva
             </button>
           </div>
@@ -183,7 +134,7 @@ export default function ReservationForm() {
           </div>
         </div>
 
-        <form className="reservation-form card form-appear" onSubmit={handleSubmit}>
+        <form className="reservation-form card" onSubmit={handleSubmit}>
           <fieldset className="form-fieldset">
             <legend className="form-legend">Tu reserva</legend>
             <div className="form-group">

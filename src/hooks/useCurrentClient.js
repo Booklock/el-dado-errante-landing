@@ -12,7 +12,7 @@ export function useCurrentClient() {
       .from("clients")
       .select("*")
       .eq("auth_user_id", userId)
-      .maybeSingle();
+      .single();
     setClient(data ?? null);
     setLoading(false);
   }, []);

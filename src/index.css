@@ -2434,3 +2434,189 @@ section {
 .catalog-card-animate {
   animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ── Navbar dropdowns ── */
+.nav-dropdown-wrapper {
+  position: relative;
+}
+.nav-dropdown-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.15s;
+}
+.nav-dropdown-trigger:hover {
+  color: var(--color-primary);
+}
+.nav-dropdown-caret {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.nav-dropdown-trigger[aria-expanded="true"] .nav-dropdown-caret {
+  transform: rotate(180deg);
+}
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(43, 27, 18, 0.12);
+  min-width: 190px;
+  z-index: 200;
+  padding: 0.4rem;
+  animation: fade-up 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.nav-dropdown-item {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-dropdown-item:hover {
+  background: var(--color-background, var(--color-bg));
+  color: var(--color-primary);
+}
+
+/* ── Mobile nav groups ── */
+.mobile-nav-group {
+  padding: 0.1rem 0;
+}
+.mobile-nav-group-label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  color: var(--color-text);
+}
+.mobile-nav-sub {
+  display: block;
+  padding: 0.35rem 0 0.35rem 1.1rem;
+  color: var(--color-text-soft);
+  text-decoration: none;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  text-align: left;
+  transition: color 0.15s;
+}
+.mobile-nav-sub:hover {
+  color: var(--color-primary);
+}
+
+/* ── Catalog "Ver todos" link (compact mode) ── */
+.catalog-ver-todos-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.catalog-ver-todos-link a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 0.15s;
+}
+.catalog-ver-todos-link a:hover {
+  border-color: var(--color-primary);
+}
+
+/* ── Combos page ── */
+.combos-section {
+  padding: 5rem 0 3rem;
+  min-height: 55vh;
+}
+.combos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.combo-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+.combo-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.combo-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.combo-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text);
+}
+.combo-card-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-soft);
+  margin: 0;
+}
+.combo-card-items {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.combo-card-items li {
+  font-size: 0.875rem;
+  color: var(--color-text-soft);
+}
+.combo-card-items li::before {
+  content: "✓ ";
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.combo-card-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0.25rem 0 0;
+}
+.combo-card .btn {
+  margin-top: auto;
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useCurrentClient } from "../hooks/useCurrentClient";
 
@@ -218,18 +219,18 @@ function GameModal({ game, onClose, onReserve, currentClient }) {
   );
 }
 
-export default function Catalog() {
+export default function Catalog({ compact = false, defaultView = "categories", initialCategory = "all" }) {
   const { client: currentClient } = useCurrentClient();
   const [allGames,       setAllGames]       = useState([]);
   const [loading,        setLoading]        = useState(true);
   const [error,          setError]          = useState(null);
-  const [view,           setView]           = useState("categories");
+  const [view,           setView]           = useState(compact ? "categories" : defaultView);
   const [currentIndexes, setCurrentIndexes] = useState({});
   const [selectedGame,   setSelectedGame]   = useState(null);
 
   // Shared filters (categories view uses only category + availability)
   const [search,         setSearch]         = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [onlyAvailable,  setOnlyAvailable]  = useState(false);
   const [priceFilter,    setPriceFilter]    = useState("all");
   const [playersFilter,  setPlayersFilter]  = useState("all");
@@ -332,19 +333,21 @@ export default function Catalog() {
         </p>
 
         {/* View toggle */}
-        <div className="catalog-view-toggle">
-          <button className={`view-toggle-btn${view === "categories" ? " active" : ""}`}
-            onClick={() => setView("categories")}>
-            Por categoría
-          </button>
-          <button className={`view-toggle-btn${view === "all" ? " active" : ""}`}
-            onClick={() => setView("all")}>
-            Ver todos ({allGames.length})
-          </button>
-        </div>
+        {!compact && (
+          <div className="catalog-view-toggle">
+            <button className={`view-toggle-btn${view === "categories" ? " active" : ""}`}
+              onClick={() => setView("categories")}>
+              Por categoría
+            </button>
+            <button className={`view-toggle-btn${view === "all" ? " active" : ""}`}
+              onClick={() => setView("all")}>
+              Ver todos ({allGames.length})
+            </button>
+          </div>
+        )}
 
         {/* Filters — full panel for grid view, minimal for carousel */}
-        {view === "all" ? (
+        {!compact && view === "all" ? (
           <div className="catalog-filters-full">
             <input
               className="catalog-search"
@@ -422,7 +425,7 @@ export default function Catalog() {
               )}
             </div>
           </div>
-        ) : (
+        ) : !compact ? (
           <div className="catalog-filters">
             <div className="catalog-filter-chips">
               {[{ key: "all", label: "Todos" }, ...CATEGORY_ORDER.map(k => ({ key: k, label: CATEGORY_META[k].title }))].map(f => (
@@ -435,7 +438,7 @@ export default function Catalog() {
               {onlyAvailable ? "✅ Solo disponibles" : "Todos los estados"}
             </button>
           </div>
-        )}
+        ) : null}
 
         {/* Content */}
         {view === "categories" ? (
@@ -530,6 +533,12 @@ export default function Catalog() {
               ))}
             </div>
           )
+        )}
+
+        {compact && (
+          <div className="catalog-ver-todos-link">
+            <Link to="/catalogo">Ver todos los juegos ({allGames.length}) →</Link>
+          </div>
         )}
       </div>
 
