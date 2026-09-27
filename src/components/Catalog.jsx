@@ -505,8 +505,10 @@ export default function Catalog() {
             </div>
           ) : (
             <div className="catalog-all-grid">
-              {filteredGames.map(g => (
-                <button key={g.id} className="catalog-game-card" onClick={() => setSelectedGame(g)}>
+              {filteredGames.map((g, i) => (
+                <button key={g.id} className="catalog-game-card catalog-card-animate"
+                  style={{ animationDelay: `${Math.min(i, 15) * 0.04}s` }}
+                  onClick={() => setSelectedGame(g)}>
                   {g.image_url ? (
                     <img src={g.image_url} alt={g.name} className="catalog-game-card-img" />
                   ) : (

@@ -9,7 +9,7 @@ function ReservationGate({ onOpenAuth }) {
       <div className="container">
         <span className="section-label">Reservas</span>
         <h2 className="section-title">Reservá tu juego</h2>
-        <div className="reservation-gate card">
+        <div className="reservation-gate card form-appear">
           <span style={{ fontSize: "2.5rem" }}>🎲</span>
           <h3>¿Cómo querés reservar?</h3>
           <div className="reservation-gate-options">
@@ -117,7 +117,7 @@ export default function ReservationForm() {
         <div className="container">
           <span className="section-label">Reservas</span>
           <h2 className="section-title">Reservá tu juego</h2>
-          <div className="reservation-gate card">
+          <div className="reservation-gate card form-appear">
             <span style={{ fontSize: "2.5rem" }}>⚠️</span>
             <h3>No encontramos tu perfil</h3>
             <p style={{ color: "var(--color-text-soft)", maxWidth: 400, margin: "0 auto 1rem" }}>
@@ -138,7 +138,7 @@ export default function ReservationForm() {
     return (
       <section id="reservar" className="reservation-section">
         <div className="container">
-          <div className="reservation-success card">
+          <div className="reservation-success card form-appear">
             <span className="reservation-success-icon">🎲</span>
             <h3>¡Reserva enviada!</h3>
             <p>Te confirmamos por WhatsApp en breve.</p>
@@ -183,7 +183,7 @@ export default function ReservationForm() {
           </div>
         </div>
 
-        <form className="reservation-form card" onSubmit={handleSubmit}>
+        <form className="reservation-form card form-appear" onSubmit={handleSubmit}>
           <fieldset className="form-fieldset">
             <legend className="form-legend">Tu reserva</legend>
             <div className="form-group">
