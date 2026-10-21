@@ -2620,3 +2620,91 @@ section {
 .combo-card .btn {
   margin-top: auto;
 }
+
+/* ── Buy List ─────────────────────────────────────────────────────── */
+.buy-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.buy-list-card { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.buy-list-card-header { display: flex; align-items: flex-start; gap: 0.75rem; }
+.buy-list-card-name { margin: 0; font-size: 1rem; font-weight: 700; }
+.buy-list-card-notes { margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-soft); }
+.buy-status-badge { padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.buy-vendor-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.buy-vendor-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+.buy-vendor-item { display: flex; align-items: center; gap: 0.5rem; background: var(--color-bg-card, #f9f9f9); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.85rem; }
+.buy-vendor-price { font-weight: 700; color: var(--color-primary); margin-left: auto; white-space: nowrap; }
+.buy-vendor-link { font-size: 0.8rem; color: var(--color-primary); text-decoration: none; }
+.buy-vendor-link:hover { text-decoration: underline; }
+.buy-vendor-remove { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 0.85rem; padding: 0 0.2rem; line-height: 1; }
+.buy-list-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
+.btn-danger { background: none; border: 1px solid #dc2626; color: #dc2626; border-radius: 6px; cursor: pointer; font-size: 0.8rem; padding: 0.3rem 0.7rem; }
+.btn-danger:hover { background: #fef2f2; }
+
+/* ── Social Notes ─────────────────────────────────────────────────── */
+.sn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.sn-card { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.sn-type-note { border-top: 3px solid #6366f1; }
+.sn-type-checklist { border-top: 3px solid #10b981; }
+.sn-card-header { display: flex; align-items: flex-start; gap: 0.5rem; }
+.sn-type-icon { font-size: 1rem; flex-shrink: 0; }
+.sn-card-title { margin: 0; font-size: 0.95rem; font-weight: 700; flex: 1; }
+.sn-card-content { margin: 0; font-size: 0.875rem; color: var(--color-text-soft); white-space: pre-line; line-height: 1.5; }
+.sn-checklist { display: flex; flex-direction: column; gap: 0.35rem; }
+.sn-check-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; user-select: none; }
+.sn-check-item input[type="checkbox"] { cursor: pointer; }
+.sn-progress { position: relative; height: 6px; background: var(--color-border, #e5e7eb); border-radius: 3px; margin-top: 0.5rem; overflow: hidden; }
+.sn-progress-bar { height: 100%; background: #10b981; border-radius: 3px; transition: width 0.3s; }
+.sn-progress-label { position: absolute; right: 0; top: -18px; font-size: 0.75rem; color: var(--color-text-soft); }
+.sn-card-date { margin: 0; font-size: 0.75rem; color: var(--color-text-soft); }
+.sn-checklist-edit { display: flex; flex-direction: column; gap: 0.4rem; }
+.sn-check-item-edit { display: flex; align-items: center; gap: 0.5rem; background: var(--color-bg-card, #f9f9f9); border-radius: 6px; padding: 0.4rem 0.6rem; }
+
+/* ── Giveaway Admin ───────────────────────────────────────────────── */
+.gw-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .gw-detail-grid { grid-template-columns: 1fr; } }
+.gw-entries-table { display: flex; flex-direction: column; gap: 0; }
+.gw-entries-header { display: grid; grid-template-columns: 2fr 1.5fr 2fr 80px auto; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 700; color: var(--color-text-soft); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--color-border, #e5e7eb); }
+.gw-entry-row { display: grid; grid-template-columns: 2fr 1.5fr 2fr 80px auto; gap: 0.5rem; padding: 0.6rem 0.75rem; font-size: 0.85rem; border-bottom: 1px solid var(--color-border, #e5e7eb); align-items: center; }
+.gw-entry-row:last-child { border-bottom: none; }
+.gw-winner-row { background: #fef9c3; }
+
+/* ── Raffle Animation ─────────────────────────────────────────────── */
+.raffle-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.raffle-modal { background: var(--color-bg, #fff); border-radius: 20px; padding: 2.5rem 3rem; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 25px 60px rgba(0,0,0,0.35); }
+.raffle-spinning-label { font-size: 1.1rem; color: var(--color-text-soft); margin: 0 0 1rem; }
+.raffle-slot { font-size: 1.8rem; font-weight: 800; min-height: 2.5rem; color: var(--color-primary); letter-spacing: -0.02em; }
+.raffle-winner-label { font-size: 1rem; color: var(--color-text-soft); margin: 0.5rem 0; }
+.raffle-winner-name { font-size: 2rem; font-weight: 900; color: var(--color-primary); letter-spacing: -0.02em; }
+.raffle-winner-ig { color: var(--color-text-soft); margin: 0.25rem 0; font-size: 0.95rem; }
+.raffle-winner-tickets { color: var(--color-text-soft); font-size: 0.85rem; margin: 0.25rem 0; }
+.confetti-burst { font-size: 2.5rem; animation: confetti-pop 0.5s ease; }
+@keyframes confetti-pop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
+
+/* ── Giveaway Public Page ─────────────────────────────────────────── */
+.giveaway-section { max-width: 540px; margin: 0 auto; padding: 3rem 1rem 5rem; }
+.giveaway-empty { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem; padding: 2rem; }
+.giveaway-hero { text-align: center; margin-bottom: 2rem; }
+.giveaway-badge { display: inline-block; background: var(--color-primary); color: #fff; font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.9rem; border-radius: 999px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1rem; }
+.giveaway-title { font-size: 2rem; font-weight: 900; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
+.giveaway-desc { color: var(--color-text-soft); margin: 0 0 1rem; }
+.giveaway-prize { display: flex; flex-direction: column; gap: 0.25rem; background: #fef9c3; border-radius: 12px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; }
+.giveaway-prize-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #a16207; letter-spacing: 0.05em; }
+.giveaway-prize-value { font-weight: 700; font-size: 1.05rem; }
+.giveaway-ends { font-size: 0.85rem; color: var(--color-text-soft); margin: 0; }
+.giveaway-form { background: var(--color-bg-card, #fff); border: 1px solid var(--color-border, #e5e7eb); border-radius: 16px; padding: 1.75rem; }
+.giveaway-form-title { margin: 0 0 1.25rem; font-size: 1.2rem; font-weight: 700; }
+.giveaway-actions { margin-bottom: 1.5rem; }
+.giveaway-actions-label { font-size: 0.85rem; color: var(--color-text-soft); margin: 0 0 0.75rem; font-weight: 600; }
+.giveaway-action-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 0.75rem; border: 1px solid var(--color-border, #e5e7eb); border-radius: 10px; cursor: pointer; margin-bottom: 0.5rem; transition: border-color 0.15s, background 0.15s; user-select: none; }
+.giveaway-action-item.checked { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
+.giveaway-action-item input[type="checkbox"] { cursor: pointer; }
+.giveaway-action-icon { font-size: 1.1rem; }
+.giveaway-action-label { flex: 1; font-size: 0.9rem; font-weight: 500; }
+.giveaway-action-tickets { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); white-space: nowrap; }
+.giveaway-tickets-preview { text-align: center; font-size: 0.9rem; background: color-mix(in srgb, var(--color-primary) 10%, transparent); color: var(--color-primary); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem; font-weight: 600; }
+.giveaway-success { background: var(--color-bg-card, #fff); border: 1px solid var(--color-border, #e5e7eb); border-radius: 16px; padding: 2.5rem 1.75rem; text-align: center; }
+.giveaway-success h3 { margin: 0.5rem 0; font-size: 1.4rem; }
+.giveaway-success p { margin: 0.4rem 0; }
