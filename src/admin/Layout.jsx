@@ -10,7 +10,8 @@ import Finances      from "./pages/Finances";
 import Combos        from "./pages/Combos";
 import BuyList       from "./pages/BuyList";
 import SocialNotes   from "./pages/SocialNotes";
-import Giveaway      from "./pages/Giveaway";
+import Giveaway         from "./pages/Giveaway";
+import ContentCalendar  from "./pages/ContentCalendar";
 
 const NAV = [
   { key: "dashboard",     label: "Inicio",    icon: "🏠" },
@@ -24,9 +25,10 @@ const NAV = [
   { key: "buylist",       label: "Compras",   icon: "🛒" },
   { key: "socialnotes",   label: "Redes",     icon: "📝" },
   { key: "giveaway",      label: "Sorteos",   icon: "🎰" },
+  { key: "calendar",      label: "Calendario",icon: "📅" },
 ];
 
-const PAGES = { dashboard: Dashboard, reservations: Reservations, games: Games, combos: Combos, packs: Packs, subscriptions: Subscriptions, clients: Clients, finances: Finances, buylist: BuyList, socialnotes: SocialNotes, giveaway: Giveaway };
+const PAGES = { dashboard: Dashboard, reservations: Reservations, games: Games, combos: Combos, packs: Packs, subscriptions: Subscriptions, clients: Clients, finances: Finances, buylist: BuyList, socialnotes: SocialNotes, giveaway: Giveaway, calendar: ContentCalendar };
 
 export default function Layout() {
   const [section, setSection] = useState("dashboard");
