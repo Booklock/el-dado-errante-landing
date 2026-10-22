@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
+import SocialNotesBoard from "./SocialNotes";
 
 const PLATFORMS = [
   { key: "instagram", label: "Instagram",  icon: "📸" },
@@ -44,6 +45,7 @@ export default function ContentCalendar() {
   const [modal,   setModal]   = useState(null); // null | { mode: "new"|"edit", post?, date? }
   const [form,    setForm]    = useState(EMPTY_FORM);
   const [saving,  setSaving]  = useState(false);
+  const [tab,     setTab]     = useState("calendar"); // "calendar" | "ideas"
 
   const load = useCallback(async () => {
     const from = `${year}-${String(month + 1).padStart(2, "0")}-01`;
@@ -155,20 +157,31 @@ export default function ContentCalendar() {
     pending: { bg: "#f3f4f6", color: "#374151", border: "#d1d5db" },
   };
 
-  if (loading) return <div className="admin-section"><p>Cargando...</p></div>;
+  if (loading && tab === "calendar") return <div className="admin-section"><p>Cargando...</p></div>;
 
   return (
     <div className="admin-section">
       {/* Header */}
       <div className="admin-section-header">
-        <h2>Calendario de publicaciones</h2>
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <button className="btn btn-secondary" onClick={prevMonth}>‹</button>
-          <span style={{ fontWeight: 700, minWidth: "11rem", textAlign: "center" }}>{MONTHS[month]} {year}</span>
-          <button className="btn btn-secondary" onClick={nextMonth}>›</button>
-        </div>
+        <h2>Publicaciones</h2>
+        {tab === "calendar" && (
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <button className="btn btn-secondary" onClick={prevMonth}>‹</button>
+            <span style={{ fontWeight: 700, minWidth: "11rem", textAlign: "center" }}>{MONTHS[month]} {year}</span>
+            <button className="btn btn-secondary" onClick={nextMonth}>›</button>
+          </div>
+        )}
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: "0.35rem", marginBottom: "1.25rem" }}>
+        <button className={`filter-chip${tab === "calendar" ? " active" : ""}`} onClick={() => setTab("calendar")}>📅 Calendario</button>
+        <button className={`filter-chip${tab === "ideas" ? " active" : ""}`} onClick={() => setTab("ideas")}>💡 Ideas</button>
+      </div>
+
+      {tab === "ideas" && <SocialNotesBoard />}
+
+      {tab === "calendar" && <>
       {/* Legend */}
       <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap", fontSize: "0.8rem" }}>
         {[["done","✅ Publicado"],["late","⚠️ Atrasado"],["pending","🕐 Pendiente"]].map(([s,l]) => (
@@ -304,6 +317,7 @@ export default function ContentCalendar() {
           </div>
         </div>
       )}
+      </>}
     </div>
   );
 }
