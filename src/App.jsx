@@ -16,6 +16,7 @@ import { supabase } from "./lib/supabase";
 import CatalogPage from "./pages/CatalogPage";
 import MembershipsPage from "./pages/MembershipsPage";
 import CombosPage from "./pages/CombosPage";
+import GiveawayPage from "./pages/GiveawayPage";
 
 function LandingPage({ onDashboard }) {
   return (
@@ -75,6 +76,7 @@ function AppInner() {
         <Route path="/catalogo/:categoria" element={<CatalogPageRoute onDashboard={() => setView("dashboard")} />} />
         <Route path="/precios/membresias" element={<MembershipsPage onDashboard={() => setView("dashboard")} />} />
         <Route path="/precios/combos" element={<CombosPage onDashboard={() => setView("dashboard")} />} />
+        <Route path="/sorteo" element={<GiveawayPage onDashboard={() => setView("dashboard")} />} />
         <Route path="*" element={<LandingPage onDashboard={() => setView("dashboard")} />} />
       </Routes>
       {resetPassword && <ResetPasswordModal onClose={() => setResetPassword(false)} />}
